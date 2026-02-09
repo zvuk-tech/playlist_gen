@@ -1,0 +1,342 @@
+/* ====== Общий Layout ====== */
+
+body {
+  margin: 0;
+  background: #111;
+  color: #fff;
+  font-family: sans-serif;
+  height: 100vh;
+  overflow: hidden;
+}
+
+#wrapper {
+  display: flex;
+  height: 100vh;
+}
+
+/* ====== Canvas ====== */
+
+#canvas-container {
+  width: 1200px;
+  height: 600px;
+  margin: auto 0 auto 20px;
+  border: 1px solid #444;
+  flex-shrink: 0;
+}
+
+/* ====== Панель справа ====== */
+
+.control-panel {
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 300px;
+  height: 100vh;
+  background: #1e1e1e;
+  padding: 14px;
+  box-sizing: border-box;
+  border-left: 1px solid #333;
+  overflow-y: auto;
+  font-size: 13px;
+}
+
+.control-panel h2 {
+  margin: 0 0 14px 0;
+  font-size: 16px;
+  text-align: center;
+  font-weight: 600;
+}
+
+/* ====== Базовые элементы ====== */
+
+.control-panel label {
+  margin-top: 10px;
+  margin-bottom: 2px;
+  display: block;
+  font-size: 13px;
+}
+
+.control-panel input[type="range"],
+.control-panel input[type="number"],
+.control-panel input[type="text"] {
+  width: 100%;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ====== Базовые кнопки ====== */
+
+.control-panel button {
+  width: 100%;
+  padding: 10px 0;
+  margin-top: 8px;
+  background: #444;
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.control-panel button:hover {
+  background: #555;
+}
+
+/* ====== Кнопки-секции (collapsible) ====== */
+
+.collapsible {
+  background: #333 !important;
+  border-radius: 6px;
+  margin-top: 14px !important;
+  text-align: left;
+  padding-left: 10px !important;
+}
+
+.collapsible.is-open {
+  background: #2f2f2f !important;
+}
+
+/* ====== Контейнер секции ====== */
+
+.content {
+  display: none;
+  padding: 10px 10px 10px 10px;
+  margin-top: 6px;
+  background: #282828;
+  border: 1px solid #333;
+  border-radius: 6px;
+}
+
+.content--group {
+  padding-top: 12px;
+}
+
+/* Заголовки внутри одной группы */
+.group-title{
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  opacity: 0.95;
+  margin: 2px 0 6px;
+}
+
+.group-divider{
+  height: 1px;
+  background: #333;
+  margin: 14px 0;
+  border-radius: 1px;
+}
+
+/* ====== Компактная палитра ====== */
+
+.palette-row-compact {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.palette-block {
+  flex: 1;
+}
+
+.palette-title-compact {
+  font-size: 11px;
+  margin-bottom: 2px;
+  opacity: 0.9;
+}
+
+.palette-compact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+}
+
+.palette-compact .swatch {
+  width: 18px;
+  height: 18px;
+  border: 1px solid #333;
+  cursor: pointer;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.palette-compact .swatch.is-active {
+  outline: 2px solid rgba(255,255,255,0.9);
+  outline-offset: 1px;
+}
+
+/* Кнопки Random */
+.palette-actions-compact {
+  display: flex;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.palette-actions-compact button {
+  flex: 1;
+  padding: 6px 4px;
+  font-size: 12px;
+  margin-top: 0;
+}
+
+/* ====== Save presets row ====== */
+
+.save-row {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.save-row button {
+  flex: 1;
+  padding: 8px 6px;
+  font-size: 12px;
+  margin-top: 0;
+}
+
+/* Убираем скроллбар в webkit */
+.control-panel::-webkit-scrollbar {
+  width: 0;
+}
+
+/* ====== Язык ====== */
+
+.lang-switch {
+  display: flex;
+  gap: 8px;
+  margin-top: 20px;
+  justify-content: center;
+}
+
+.lang-switch button {
+  flex: 1;
+  padding: 8px 0;
+  font-size: 12px;
+  border-radius: 6px;
+  background: #333;
+  border: 1px solid #555;
+  cursor: pointer;
+}
+
+.lang-switch button:hover {
+  background: #444;
+}
+
+/* ===== Primary actions (герой-зона) ===== */
+
+.primary-actions{
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding: 10px 10px 12px;
+  margin: 0 -14px 10px;
+  background: rgba(30,30,30,0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid #2b2b2b;
+}
+
+.primary-actions__row{
+  display: flex;
+  gap: 8px;
+}
+
+.primary-actions__row .btn{
+  flex: 1;
+  margin-top: 0;
+}
+
+.primary-actions__save{
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #2b2b2b;
+}
+
+.primary-actions__title{
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  opacity: 0.9;
+  margin-bottom: 8px;
+}
+
+/* Универсальные классы кнопок */
+.btn{
+  width: 100%;
+  border: none;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.06s, background 0.15s, box-shadow 0.15s;
+}
+
+.btn:active{
+  transform: translateY(1px);
+}
+
+/* Главная кнопка (Рандом) */
+.btn-primary{
+  background: linear-gradient(180deg, #7a5cff, #5a3dff);
+  box-shadow: 0 10px 24px rgba(90,61,255,0.22);
+}
+.btn-primary:hover{ background: linear-gradient(180deg, #846bff, #6247ff); }
+
+/* Вторичная (Обновить) */
+.btn-secondary{
+  background: #2f2f2f;
+  border: 1px solid #3a3a3a;
+}
+.btn-secondary:hover{ background: #363636; }
+
+/* Save кнопки */
+.save-row--primary{
+  margin-top: 0;
+}
+.btn-save{
+  background: #3a3a3a;
+  border: 1px solid #444;
+  border-radius: 10px;
+  padding: 8px 6px;
+  font-size: 12px;
+  margin-top: 0;
+}
+.btn-save:hover{ background: #454545; }
+
+/* Чекбокс строка */
+.checkbox-row{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  font-size: 12px;
+  user-select: none;
+}
+.checkbox-row input{
+  width: 16px;
+  height: 16px;
+}
+/* ===== HERO RANDOM BUTTON ===== */
+
+.btn-primary--hero{
+  padding: 18px 0;               /* сильно выше */
+  font-size: 17px;               /* крупный текст */
+  border-radius: 16px;
+  letter-spacing: 0.3px;
+  box-shadow: 0 18px 44px rgba(90,61,255,0.38);
+}
+
+/* Обновить — вторичная, под рандом */
+.btn-secondary--under-hero{
+  margin-top: 6px;
+  padding: 9px 0;
+  font-size: 12px;
+  border-radius: 12px;
+  background: #2f2f2f;
+  border: 1px solid #3a3a3a;
+  opacity: 0.9;
+}
+
+.btn-secondary--under-hero:hover{
+  background: #363636;
+}

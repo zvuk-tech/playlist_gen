@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>p5.js Controls</title>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+  <link rel="stylesheet" href="style.css" />
+
+  <script src="i18n.js" defer></script>
+  <script src="sketch.js" defer></script>
+</head>
+<body>
+  <div id="wrapper">
+    <div id="canvas-container"></div>
+
+    <div class="control-panel">
+      <h2 data-i18n="settings">Настройки</h2>
+
+      <!-- ===== PRIMARY ACTIONS (всегда на виду) ===== -->
+      <div class="primary-actions">
+
+  <!-- ГЛАВНАЯ КНОПКА -->
+  <button
+    id="randomBtn"
+    class="btn btn-primary btn-primary--hero"
+    data-i18n="random"
+  >
+    ✨Рандом✨
+  </button>
+
+  <!-- ВТОРИЧНАЯ -->
+  <button
+    id="resetBtn"
+    class="btn btn-secondary btn-secondary--under-hero"
+    data-i18n="reset"
+  >
+    Обновить
+  </button>
+
+  <!-- СОХРАНЕНИЕ -->
+  <div class="primary-actions__save">
+    <div class="primary-actions__title" data-i18n="save">Сохранить</div>
+
+    <div class="save-row save-row--primary">
+      <button id="save1000Btn" class="btn btn-save">1000×1000</button>
+      <button id="save534Btn" class="btn btn-save">534×530</button>
+      <button id="save640Btn" class="btn btn-save">640×320</button>
+    </div>
+
+    <label class="checkbox-row">
+      <input id="exportPlaqueToggle" type="checkbox" checked>
+      <span data-i18n="plaque">Подложка лого</span>
+    </label>
+  </div>
+</div>
+
+      <!-- ===== ONE GROUP: SETTINGS (ВСЁ ВНУТРИ) ===== -->
+      <button class="collapsible" data-i18n="settingsGroup">Настройки</button>
+      <div class="content content--group">
+
+        <!-- ==== Основные параметры ==== -->
+        <div class="group-title" data-i18n="main">Основные</div>
+
+        <label data-i18n="length">Длина</label>
+        <input id="ellipseCount" type="range" min="5" max="50" step="1">
+
+        <label data-i18n="spacing">Интервал</label>
+        <input id="ellipseSpacing" type="range" min="-15" max="30" step="1">
+
+        <label data-i18n="width">Ширина</label>
+        <input id="ellipseWidth" type="range" min="25" max="150" step="1">
+
+        <div class="group-divider"></div>
+
+        <!-- ==== Высоты ==== -->
+        <div class="group-title" data-i18n="heightWave">Высота волны</div>
+
+        <label data-i18n="maxHeight">Макс. высота</label>
+        <input id="maxEllipseHeight" type="range" min="100" max="500" step="10">
+
+        <label data-i18n="heightRandom">Разность высоты</label>
+        <input id="heightRandomness" type="range" min="0" max="1" step="0.01">
+
+        <div class="group-divider"></div>
+
+        <!-- ==== Волна ==== -->
+        <div class="group-title" data-i18n="waveShape">Форма волны</div>
+
+        <label data-i18n="amplitude">Амплитуда</label>
+        <input id="waveAmplitude" type="range" min="0" max="100" step="1">
+
+        <label data-i18n="offset">Смещение</label>
+        <input id="waveOffset" type="range" min="0" max="1000" step="1">
+
+        <div class="group-divider"></div>
+
+        <!-- ==== Количество линий ==== -->
+        <div class="group-title" data-i18n="lineCount">Количество волн</div>
+
+        <label data-i18n="amount">Количество</label>
+        <input id="lineCopies" type="number" min="0" max="5" step="1">
+
+        <label data-i18n="lineSpacing">Интервал</label>
+        <input id="lineSpacing" type="range" min="160" max="700" step="1">
+
+        <div class="group-divider"></div>
+
+        <!-- ==== Повороты ==== -->
+        <div class="group-title" data-i18n="rotation">Вращение</div>
+
+        <label>X</label>
+        <input id="rotateXAngle" type="range" min="-1" max="1" step="0.01">
+
+        <label>Y</label>
+        <input id="rotateYAngle" type="range" min="-1" max="1" step="0.01">
+
+        <label>Z</label>
+        <input id="rotateZAngle" type="range" min="-1" max="1" step="0.01">
+
+        <div class="group-divider"></div>
+
+        <!-- ==== Позиция ==== -->
+        <div class="group-title" data-i18n="position">Позиция</div>
+
+        <label>X</label>
+        <input id="posX" type="range" min="-200" max="200" step="1">
+
+        <label>Y</label>
+        <input id="posY" type="range" min="-200" max="200" step="1">
+
+        <label>Z</label>
+        <input id="posZ" type="range" min="-500" max="500" step="1">
+
+        <div class="group-divider"></div>
+
+        <!-- ==== Цвета ==== -->
+        <div class="group-title" data-i18n="color">Цвета</div>
+
+        <div class="palette-row-compact">
+          <div class="palette-block">
+            <div class="palette-title-compact" data-i18n="background">Фон</div>
+            <div id="bgPalette" class="palette-compact"></div>
+          </div>
+
+          <div class="palette-block">
+            <div class="palette-title-compact" data-i18n="wave">Волна</div>
+            <div id="ellipsePalette" class="palette-compact"></div>
+          </div>
+        </div>
+
+        <div class="palette-actions-compact">
+          <button id="randomColorBothBtn" data-i18n="randomColors">Рандом цвета</button>
+          <button id="randomBgBtn" data-i18n="randomBg">Рандом фона</button>
+          <button id="randomEllipseBtn" data-i18n="randomWave">Рандом волны</button>
+        </div>
+
+        <div class="group-divider"></div>
+
+        <!-- ==== Прочее ==== -->
+        <div class="group-title" data-i18n="other">Прочее</div>
+
+        <label data-i18n="skewX">Наклон X</label>
+        <input id="skewAngleX" type="range" min="-0.785" max="0.785" step="0.01">
+
+        <label data-i18n="skewY">Наклон Y</label>
+        <input id="skewAngleY" type="range" min="-0.785" max="0.785" step="0.01">
+
+        <label data-i18n="chaos">Хаотичность</label>
+        <input id="chaos" type="range" min="0" max="0.52" step="0.01">
+
+      </div>
+
+      <!-- ==== ЯЗЫК ==== -->
+      <div class="lang-switch">
+        <button id="langRu">RU</button>
+        <button id="langEn">EN</button>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>
