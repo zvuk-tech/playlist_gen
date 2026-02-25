@@ -39,7 +39,10 @@ const translations = {
     random: "✨Сгенерировать✨",
     reset: "Сброс",
     save: "Сохранить",
-    plaque: "Подложка лого",
+
+    // ✅ new
+    logo: "Лого",
+    plaque: "Подложка",
   },
 
   en: {
@@ -82,7 +85,10 @@ const translations = {
     random: "✨Generate✨",
     reset: "Reset",
     save: "Save",
-    plaque: "Logo plaque",
+
+    // ✅ new
+    logo: "Logo",
+    plaque: "Plaque",
   }
 };
 
