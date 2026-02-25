@@ -260,16 +260,20 @@ function setup() {
   applyBadgeRulesToUI();
 
   logoToggle?.addEventListener('change', () => {
-    exportShowLogo = logoToggle.checked;
+  exportShowLogo = logoToggle.checked;
 
-    // ✅ если выключили лого — плашка тоже выключается
-    if (!exportShowLogo) {
-      exportShowPlaque = false;
-      if (plaqueToggle) plaqueToggle.checked = false;
-    }
+  if (exportShowLogo) {
+    // ✅ если включили лого — включаем плашку автоматически
+    exportShowPlaque = true;
+    if (plaqueToggle) plaqueToggle.checked = true;
+  } else {
+    // ✅ если выключили лого — выключаем плашку
+    exportShowPlaque = false;
+    if (plaqueToggle) plaqueToggle.checked = false;
+  }
 
-    pushHistory();
-  });
+  pushHistory();
+});
 
   plaqueToggle?.addEventListener('change', () => {
     exportShowPlaque = plaqueToggle.checked;
