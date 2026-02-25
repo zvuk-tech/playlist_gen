@@ -12,8 +12,9 @@ let historyIndex = -1;
 const HISTORY_LIMIT = 60;
 let suppressHistory = false;
 
-// ✅ Toggle for plaque visibility (preview + export)
-let exportShowPlaque = true;
+// ✅ Badge toggles (preview + export) — default OFF
+let exportShowLogo = false;
+let exportShowPlaque = false;
 
 // ✅ Square preview buffer (shows EXACT square export framing)
 let squarePreviewGfx = null;
@@ -175,6 +176,21 @@ function syncLineSpacingToHeight({ updateUI = true } = {}) {
 }
 
 // ========================
+// BADGE UI HELPERS
+// ========================
+function applyBadgeRulesToUI() {
+  const logoToggle = document.getElementById('exportLogoToggle');
+  const plaqueToggle = document.getElementById('exportPlaqueToggle');
+
+  if (logoToggle) logoToggle.checked = !!exportShowLogo;
+
+  // правило: плашка не может быть без лого
+  if (!exportShowLogo) exportShowPlaque = false;
+
+  if (plaqueToggle) plaqueToggle.checked = !!exportShowPlaque;
+}
+
+// ========================
 // SETUP / DRAW
 // ========================
 function setup() {
@@ -222,21 +238,51 @@ function setup() {
     ellipseCountEl.value = params.ellipseCount;
   }
 
-  // сначала проставим UI, потом синхронизируем lineSpacing от высоты
   syncSlidersFromParams();
   syncLineSpacingToHeight({ updateUI: true });
 
   generateEllipses(false);
 
-  // ✅ checkbox: plaque on preview + export
+  // ✅ Badge toggles wiring — both OFF by default
+  const logoToggle = document.getElementById('exportLogoToggle');
   const plaqueToggle = document.getElementById('exportPlaqueToggle');
-  if (plaqueToggle) {
-    plaqueToggle.checked = true;
-    exportShowPlaque = plaqueToggle.checked;
-    plaqueToggle.addEventListener('change', () => {
-      exportShowPlaque = plaqueToggle.checked;
-    });
+
+  if (logoToggle) {
+    logoToggle.checked = false;
+    exportShowLogo = false;
   }
+  if (plaqueToggle) {
+    plaqueToggle.checked = false;
+    exportShowPlaque = false;
+  }
+
+  // enforce initial rules
+  applyBadgeRulesToUI();
+
+  logoToggle?.addEventListener('change', () => {
+    exportShowLogo = logoToggle.checked;
+
+    // ✅ если выключили лого — плашка тоже выключается
+    if (!exportShowLogo) {
+      exportShowPlaque = false;
+      if (plaqueToggle) plaqueToggle.checked = false;
+    }
+
+    pushHistory();
+  });
+
+  plaqueToggle?.addEventListener('change', () => {
+    exportShowPlaque = plaqueToggle.checked;
+
+    // ✅ если включили плашку — включаем лого автоматически
+    if (exportShowPlaque && !exportShowLogo) {
+      exportShowLogo = true;
+      if (logoToggle) logoToggle.checked = true;
+    }
+
+    applyBadgeRulesToUI();
+    pushHistory();
+  });
 
   // --- Color buttons
   document.getElementById('randomColorBothBtn')?.addEventListener('click', () => {
@@ -284,7 +330,7 @@ function setup() {
   });
 
   ellInput?.addEventListener("input", () => {
-    if (/^#?[0-9A-Fa-f]{6}$/.test(ellInput.value)) {
+    if (/^#?[0-9A-f]{6}$/.test(ellInput.value)) {
       ellipseColor = color(ellInput.value.startsWith("#") ? ellInput.value : "#" + ellInput.value);
       updateColorInputs('ellipse');
       pushHistory();
@@ -308,10 +354,8 @@ function setup() {
 }
 
 function draw() {
-  // Рисуем только квадратный кадр в offscreen (это и есть превью)
   renderSquarePreview();
 
-  // А на main canvas показываем только этот квадрат
   background(17);
 
   push();
@@ -320,7 +364,6 @@ function draw() {
   imageMode(CENTER);
   image(squarePreviewGfx, 0, 0, squarePreviewSize, squarePreviewSize);
 
-  // тонкая рамка вокруг квадрата
   noFill();
   stroke(255, 40);
   strokeWeight(1);
@@ -345,10 +388,8 @@ function initSquarePreviewBuffer() {
 function renderSquarePreview() {
   if (!squarePreviewGfx) return;
 
-  // сцена как у экспорта квадрата
   renderSceneTo(squarePreviewGfx, squarePreviewSize, squarePreviewSize);
 
-  // бейдж сверху (для квадрата safe = весь кадр)
   clearDepthBuffer(squarePreviewGfx);
   drawBadgeOverlayToGfx(squarePreviewGfx, squarePreviewSize, squarePreviewSize);
 }
@@ -360,7 +401,6 @@ function renderSceneTo(gfx, targetW, targetH) {
   const baseW = 640;
   const baseH = 320;
 
-  // COVER framing (same as export)
   const s = Math.max(targetW / baseW, targetH / baseH);
 
   gfx.background(bgColor);
@@ -369,7 +409,6 @@ function renderSceneTo(gfx, targetW, targetH) {
 
   gfx.push();
 
-  // ВАЖНО: z не масштабируем
   gfx.scale(s, s, 1);
 
   gfx.translate(params.posX, params.posY, params.posZ);
@@ -469,7 +508,6 @@ function linkSliders() {
       if (intKeys.includes(key)) params[key] = Math.max(0, parseInt(raw));
       else params[key] = parseFloat(raw);
 
-      // ✅ если меняется высота — lineSpacing пересчитываем автоматически
       if (key === 'maxEllipseHeight') {
         syncLineSpacingToHeight({ updateUI: true });
       }
@@ -496,21 +534,18 @@ function linkSliders() {
 // RANDOM / RESET / COLORS
 // ========================
 function generateRandom() {
-  // ✅ ellipseCount всегда держим на максимуме и НЕ рандомим
   const ellipseCountEl = document.getElementById('ellipseCount');
   if (ellipseCountEl) {
     params.ellipseCount = parseInt(ellipseCountEl.max, 10);
     ellipseCountEl.value = params.ellipseCount;
   } else {
-    // fallback если слайдера нет
     params.ellipseCount = params.ellipseCount ?? 60;
   }
 
-  // lineSpacing теперь НЕ рандомим — он зависит от maxEllipseHeight
   for (const key in params) {
     if (['posX','posY','posZ','chaos'].includes(key)) continue;
-    if (key === 'lineSpacing') continue;   // ✅ важное
-    if (key === 'ellipseCount') continue;  // ✅ важное
+    if (key === 'lineSpacing') continue;
+    if (key === 'ellipseCount') continue;
 
     const el = document.getElementById(key);
     if (!el) continue;
@@ -529,7 +564,6 @@ function generateRandom() {
     }
   }
 
-  // ✅ синхронизируем spacing от высоты после рандома
   syncLineSpacingToHeight({ updateUI: true });
 
   setRandomColors();
@@ -538,7 +572,6 @@ function generateRandom() {
 
 function resetParams() {
   params = {
-    // ✅ reset тоже ставит максимум ellipseCount
     ellipseCount: parseInt(document.getElementById('ellipseCount')?.max ?? 60, 10),
     skewAngleX: 0,
     skewAngleY: 0,
@@ -558,8 +591,6 @@ function resetParams() {
   };
 
   syncSlidersFromParams();
-
-  // ✅ важное: после reset подтягиваем lineSpacing под высоту
   syncLineSpacingToHeight({ updateUI: true });
 
   setRandomColors();
@@ -688,7 +719,11 @@ function snapshotState() {
     bgHex: colorToHex(bgColor),
     ellipseHex: colorToHex(ellipseColor),
     baseHeightNorm: baseHeightNorm.slice(),
-    baseSkewNorm: baseSkewNorm.slice()
+    baseSkewNorm: baseSkewNorm.slice(),
+
+    // ✅ include badge toggles in history
+    exportShowLogo: !!exportShowLogo,
+    exportShowPlaque: !!exportShowPlaque
   };
 }
 
@@ -716,7 +751,12 @@ function restoreState(state) {
   baseHeightNorm = state.baseHeightNorm.slice();
   baseSkewNorm = state.baseSkewNorm.slice();
 
-  // ✅ при восстановлении тоже приводим spacing к высоте
+  // ✅ restore badge toggles + enforce rule
+  exportShowLogo = !!state.exportShowLogo;
+  exportShowPlaque = !!state.exportShowPlaque;
+  if (!exportShowLogo) exportShowPlaque = false;
+  applyBadgeRulesToUI();
+
   syncLineSpacingToHeight({ updateUI: true });
 
   generateEllipses(true);
@@ -757,6 +797,9 @@ function getSafeRect(w, h) {
 // BADGE OVERLAY
 // ========================
 function drawBadgeOverlayToGfx(gfx, exportW, exportH) {
+  // ✅ logo master for this simplified setup
+  if (!exportShowLogo) return;
+
   if (!logoImg) return;
   if (exportShowPlaque && !plaqueImg) return;
 
@@ -774,8 +817,6 @@ function drawBadgeOverlayToGfx(gfx, exportW, exportH) {
     const plaqueScale = badgeH / plaqueImg.height;
     plaqueW = plaqueImg.width * plaqueScale;
     plaqueH = plaqueImg.height * plaqueScale;
-  } else {
-    plaqueH = badgeH;
   }
 
   const logoH = exportShowPlaque
@@ -785,6 +826,7 @@ function drawBadgeOverlayToGfx(gfx, exportW, exportH) {
   const logoScale = logoH / logoImg.height;
   const logoW = logoImg.width * logoScale;
 
+  // если плашки нет — виртуальная область под выравнивание
   if (!exportShowPlaque) {
     plaqueW = logoW * 1.25;
     plaqueH = logoH * 1.25;
@@ -820,7 +862,6 @@ function drawBadgeOverlayToGfx(gfx, exportW, exportH) {
 // SAVE (COVER + SAME FRAMING, FIX RETINA)
 // ========================
 function saveHighRes(targetW, targetH) {
-  // для 640x320 обычно лучше 2x (3x часто уже начинает "мылить" из-за фильтрации)
   let ss = 1;
   const maxSide = Math.max(targetW, targetH);
   if (maxSide <= 800) ss = 2;
@@ -836,14 +877,12 @@ function saveHighRes(targetW, targetH) {
   gfx.smooth();
   gfx.setAttributes?.('antialias', true);
 
-  // подсказка функции рисования, что сейчас мы в hi-res
   gfx.__ss = ss;
 
   renderSceneTo(gfx, renderW, renderH);
   clearDepthBuffer(gfx);
   drawBadgeOverlayToGfx(gfx, renderW, renderH);
 
-  // 2D canvas для финального размера
   const down = createGraphics(targetW, targetH);
   down.pixelDensity(1);
 
@@ -852,7 +891,6 @@ function saveHighRes(targetW, targetH) {
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
 
-  // ВАЖНО: drawImage по canvas-канвасу WEBGL графики
   ctx.drawImage(gfx.canvas, 0, 0, targetW, targetH);
 
   const img = down.get();
