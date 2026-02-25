@@ -21,40 +21,47 @@
       <!-- ===== PRIMARY ACTIONS (всегда на виду) ===== -->
       <div class="primary-actions">
 
-  <!-- ГЛАВНАЯ КНОПКА -->
-  <button
-    id="randomBtn"
-    class="btn btn-primary btn-primary--hero"
-    data-i18n="random"
-  >
-    ✨Рандом✨
-  </button>
+        <!-- ГЛАВНАЯ КНОПКА -->
+        <button
+          id="randomBtn"
+          class="btn btn-primary btn-primary--hero"
+          data-i18n="random"
+        >
+          ✨Рандом✨
+        </button>
 
-  <!-- ВТОРИЧНАЯ -->
-  <button
-    id="resetBtn"
-    class="btn btn-secondary btn-secondary--under-hero"
-    data-i18n="reset"
-  >
-    Обновить
-  </button>
+        <!-- ВТОРИЧНАЯ -->
+        <button
+          id="resetBtn"
+          class="btn btn-secondary btn-secondary--under-hero"
+          data-i18n="reset"
+        >
+          Обновить
+        </button>
 
-  <!-- СОХРАНЕНИЕ -->
-  <div class="primary-actions__save">
-    <div class="primary-actions__title" data-i18n="save">Сохранить</div>
+        <!-- СОХРАНЕНИЕ -->
+        <div class="primary-actions__save">
+          <div class="primary-actions__title" data-i18n="save">Сохранить</div>
 
-    <div class="save-row save-row--primary">
-      <button id="save1000Btn" class="btn btn-save">1000×1000</button>
-      <button id="save534Btn" class="btn btn-save">534×530</button>
-      <button id="save640Btn" class="btn btn-save">640×320</button>
-    </div>
+          <div class="save-row save-row--primary">
+            <button id="save1000Btn" class="btn btn-save">1000×1000</button>
+            <button id="save534Btn" class="btn btn-save">534×530</button>
+            <button id="save640Btn" class="btn btn-save">640×320</button>
+          </div>
 
-    <label class="checkbox-row">
-      <input id="exportPlaqueToggle" type="checkbox" checked>
-      <span data-i18n="plaque">Подложка лого</span>
-    </label>
-  </div>
-</div>
+          <!-- ✅ Branding controls (default OFF) -->
+          <label class="checkbox-row">
+  <input id="exportLogoToggle" type="checkbox">
+  <span data-i18n="logo">Лого</span>
+</label>
+
+<label class="checkbox-row">
+  <input id="exportPlaqueToggle" type="checkbox">
+  <span data-i18n="plaque">Подложка</span>
+</label>
+
+        </div>
+      </div>
 
       <!-- ===== ONE GROUP: SETTINGS (ВСЁ ВНУТРИ) ===== -->
       <button class="collapsible" data-i18n="settingsGroup">Настройки</button>
