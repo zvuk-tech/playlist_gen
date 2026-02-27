@@ -176,6 +176,35 @@ function syncLineSpacingToHeight({ updateUI = true } = {}) {
 }
 
 // ========================
+// ✅ RANDOM ONLY: forbid ellipseSpacing in [0..5]
+// ========================
+const RANDOM_SPACING_FORBIDDEN_MIN = -1;
+const RANDOM_SPACING_FORBIDDEN_MAX = 10;
+
+// Sample random(min,max) while excluding [forbidMin..forbidMax].
+// Works for float ranges (and still fine for integer step sliders).
+function randomExcludingRange(min, max, forbidMin, forbidMax) {
+  // no overlap -> normal
+  if (forbidMax < min || forbidMin > max) return random(min, max);
+
+  // allowed segments: [min, forbidMin) and (forbidMax, max]
+  const a0 = min;
+  const a1 = Math.min(forbidMin, max);
+  const b0 = Math.max(forbidMax, min);
+  const b1 = max;
+
+  const lenA = Math.max(0, a1 - a0);
+  const lenB = Math.max(0, b1 - b0);
+
+  // if everything is forbidden -> fallback
+  if (lenA + lenB <= 0) return min;
+
+  const pick = random(0, lenA + lenB);
+  if (pick < lenA) return a0 + pick;
+  return b0 + (pick - lenA);
+}
+
+// ========================
 // BADGE UI HELPERS
 // ========================
 function applyBadgeRulesToUI() {
@@ -226,7 +255,7 @@ function setup() {
     rotateZAngle: 0,
     posX: 0,
     posY: 0,
-    posZ: -200
+    posZ: -500
   };
 
   linkSliders();
@@ -260,20 +289,20 @@ function setup() {
   applyBadgeRulesToUI();
 
   logoToggle?.addEventListener('change', () => {
-  exportShowLogo = logoToggle.checked;
+    exportShowLogo = logoToggle.checked;
 
-  if (exportShowLogo) {
-    // ✅ если включили лого — включаем плашку автоматически
-    exportShowPlaque = true;
-    if (plaqueToggle) plaqueToggle.checked = true;
-  } else {
-    // ✅ если выключили лого — выключаем плашку
-    exportShowPlaque = false;
-    if (plaqueToggle) plaqueToggle.checked = false;
-  }
+    if (exportShowLogo) {
+      // ✅ если включили лого — включаем плашку автоматически
+      exportShowPlaque = true;
+      if (plaqueToggle) plaqueToggle.checked = true;
+    } else {
+      // ✅ если выключили лого — выключаем плашку
+      exportShowPlaque = false;
+      if (plaqueToggle) plaqueToggle.checked = false;
+    }
 
-  pushHistory();
-});
+    pushHistory();
+  });
 
   plaqueToggle?.addEventListener('change', () => {
     exportShowPlaque = plaqueToggle.checked;
@@ -558,7 +587,15 @@ function generateRandom() {
     const max = parseFloat(el.max);
     if (isNaN(min) || isNaN(max)) continue;
 
-    const val = random(min, max);
+    let val;
+
+    // ✅ ТОЛЬКО ДЛЯ КНОПКИ RANDOM: исключаем 0..5 у ellipseSpacing
+    if (key === 'ellipseSpacing') {
+      val = randomExcludingRange(min, max, RANDOM_SPACING_FORBIDDEN_MIN, RANDOM_SPACING_FORBIDDEN_MAX);
+    } else {
+      val = random(min, max);
+    }
+
     if (key === 'lineCopies') {
       params[key] = Math.floor(val);
       el.value = params[key];
@@ -591,7 +628,7 @@ function resetParams() {
     rotateXAngle: 0,
     rotateYAngle: 0,
     rotateZAngle: 0,
-    posX:0, posY:0, posZ:-200
+    posX:0, posY:0, posZ:-500
   };
 
   syncSlidersFromParams();
