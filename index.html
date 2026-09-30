@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>p5.js Controls</title>
+  <title>Zvuk Equalizer Generator</title>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
   <link rel="stylesheet" href="style.css" />
@@ -13,137 +13,130 @@
 </head>
 <body>
   <div id="wrapper">
-    <div id="canvas-container"></div>
+    <main id="canvas-area">
+      <div class="preview-card">
+        <div class="preview-head">
+          <div class="preview-kicker">Preview</div>
+          <h1>Zvuk Equalizer Generator</h1>
+        </div>
+        <!-- p5.js creates the canvas here via the existing sketch.js. -->
+        <div id="canvas-container"></div>
+      </div>
+    </main>
 
-    <div class="control-panel">
-      <h2 data-i18n="settings">Настройки</h2>
+    <aside class="control-panel">
+      <div class="panel-inner">
+        <div class="panel-title-wrap">
+          <div class="panel-kicker">Generator</div>
+          <h2 data-i18n="settings">Настройки</h2>
+        </div>
 
-      <!-- ===== PRIMARY ACTIONS (всегда на виду) ===== -->
-      <div class="primary-actions">
+        <div class="panel-card primary-actions">
+          <button id="randomBtn" class="btn btn-primary btn-primary--hero" data-i18n="random">✨Рандом✨</button>
+          <button id="resetBtn" class="btn btn-secondary btn-secondary--under-hero" data-i18n="reset">Обновить</button>
+          <div class="toggle-grid">
+            <label class="checkbox-row">
+              <input id="exportLogoToggle" type="checkbox">
+              <span data-i18n="logo">Лого</span>
+            </label>
+            <label class="checkbox-row">
+              <input id="exportPlaqueToggle" type="checkbox">
+              <span data-i18n="plaque">Подложка лого</span>
+            </label>
+          </div>
+        </div>
 
-        <!-- ГЛАВНАЯ КНОПКА -->
-        <button
-          id="randomBtn"
-          class="btn btn-primary btn-primary--hero"
-          data-i18n="random"
-        >
-          ✨Рандом✨
-        </button>
+        <!-- Keep the collapsible and its immediate content sibling for sketch.js. -->
+        <button class="collapsible" data-i18n="settingsGroup">Настройки</button>
+        <div class="content content--group">
+            <div class="panel-card">
+<div class="group-title" data-i18n="main">Основные</div>
 
-        <!-- ВТОРИЧНАЯ -->
-        <button
-          id="resetBtn"
-          class="btn btn-secondary btn-secondary--under-hero"
-          data-i18n="reset"
-        >
-          Обновить
-        </button>
+        <label for="ellipseCount" data-i18n="length">Длина</label>
+        <input id="ellipseCount" type="range" min="5" max="50" step="1">
 
-        <!-- СОХРАНЕНИЕ -->
-        <div class="primary-actions__save">
-          <div class="primary-actions__title" data-i18n="save">Сохранить</div>
+        <label for="ellipseSpacing" data-i18n="spacing">Интервал</label>
+        <input id="ellipseSpacing" type="range" min="-15" max="30" step="1">
 
+        <label for="ellipseWidth" data-i18n="width">Ширина</label>
+        <input id="ellipseWidth" type="range" min="25" max="150" step="1">
+            </div>
+            <div class="panel-card">
+<div class="group-title" data-i18n="heightWave">Высота волны</div>
+
+        <label for="maxEllipseHeight" data-i18n="maxHeight">Макс. высота</label>
+        <input id="maxEllipseHeight" type="range" min="100" max="500" step="10">
+
+        <label for="heightRandomness" data-i18n="heightRandom">Разность высоты</label>
+        <input id="heightRandomness" type="range" min="0" max="1" step="0.01">
+            </div>
+            <div class="panel-card">
+<div class="group-title" data-i18n="waveShape">Форма волны</div>
+
+        <label for="waveAmplitude" data-i18n="amplitude">Амплитуда</label>
+        <input id="waveAmplitude" type="range" min="0" max="100" step="1">
+
+        <label for="waveOffset" data-i18n="offset">Смещение</label>
+        <input id="waveOffset" type="range" min="0" max="1000" step="1">
+            </div>
+            <div class="panel-card">
+<div class="group-title" data-i18n="lineCount">Количество волн</div>
+
+        <label for="lineCopies" data-i18n="amount">Количество</label>
+        <input id="lineCopies" type="number" min="0" max="5" step="1">
+
+        <label for="lineSpacing" data-i18n="lineSpacing">Интервал</label>
+        <input id="lineSpacing" type="range" min="160" max="700" step="1">
+            </div>
+            <div class="panel-card">
+<div class="group-title" data-i18n="rotation">Вращение</div>
+
+        <label for="rotateXAngle">X</label>
+        <input id="rotateXAngle" type="range" min="-1" max="1" step="0.01">
+
+        <label for="rotateYAngle">Y</label>
+        <input id="rotateYAngle" type="range" min="-1" max="1" step="0.01">
+
+        <label for="rotateZAngle">Z</label>
+        <input id="rotateZAngle" type="range" min="-1" max="1" step="0.01">
+            </div>
+            <div class="panel-card">
+<div class="group-title" data-i18n="position">Позиция</div>
+
+        <label for="posX">X</label>
+        <input id="posX" type="range" min="-200" max="200" step="1">
+
+        <label for="posY">Y</label>
+        <input id="posY" type="range" min="-200" max="200" step="1">
+
+        <label for="posZ">Z</label>
+        <input id="posZ" type="range" min="-500" max="500" step="1">
+            </div>
+            <div class="panel-card">
+<div class="group-title" data-i18n="other">Прочее</div>
+
+        <label for="skewAngleX" data-i18n="skewX">Наклон X</label>
+        <input id="skewAngleX" type="range" min="-0.785" max="0.785" step="0.01">
+
+        <label for="skewAngleY" data-i18n="skewY">Наклон Y</label>
+        <input id="skewAngleY" type="range" min="-0.785" max="0.785" step="0.01">
+
+        <label for="chaos" data-i18n="chaos">Хаотичность</label>
+        <input id="chaos" type="range" min="0" max="0.52" step="0.01">
+            </div>
+        </div>
+
+        <div class="panel-card primary-actions__save">
+          <div class="group-title primary-actions__title" data-i18n="save">Сохранить</div>
           <div class="save-row save-row--primary">
             <button id="save1000Btn" class="btn btn-save">1000×1000</button>
             <button id="save534Btn" class="btn btn-save">534×530</button>
             <button id="save640Btn" class="btn btn-save">640×320</button>
           </div>
-
-          <!-- ✅ Branding controls (default OFF) -->
-          <label class="checkbox-row">
-  <input id="exportLogoToggle" type="checkbox">
-  <span data-i18n="logo">Лого</span>
-</label>
-
-<label class="checkbox-row">
-  <input id="exportPlaqueToggle" type="checkbox">
-  <span data-i18n="plaque">Подложка лого</span>
-</label>
-
         </div>
-      </div>
 
-      <!-- ===== ONE GROUP: SETTINGS (ВСЁ ВНУТРИ) ===== -->
-      <button class="collapsible" data-i18n="settingsGroup">Настройки</button>
-      <div class="content content--group">
-
-        <!-- ==== Основные параметры ==== -->
-        <div class="group-title" data-i18n="main">Основные</div>
-
-        <label data-i18n="length">Длина</label>
-        <input id="ellipseCount" type="range" min="5" max="50" step="1">
-
-        <label data-i18n="spacing">Интервал</label>
-        <input id="ellipseSpacing" type="range" min="-15" max="30" step="1">
-
-        <label data-i18n="width">Ширина</label>
-        <input id="ellipseWidth" type="range" min="25" max="150" step="1">
-
-        <div class="group-divider"></div>
-
-        <!-- ==== Высоты ==== -->
-        <div class="group-title" data-i18n="heightWave">Высота волны</div>
-
-        <label data-i18n="maxHeight">Макс. высота</label>
-        <input id="maxEllipseHeight" type="range" min="100" max="500" step="10">
-
-        <label data-i18n="heightRandom">Разность высоты</label>
-        <input id="heightRandomness" type="range" min="0" max="1" step="0.01">
-
-        <div class="group-divider"></div>
-
-        <!-- ==== Волна ==== -->
-        <div class="group-title" data-i18n="waveShape">Форма волны</div>
-
-        <label data-i18n="amplitude">Амплитуда</label>
-        <input id="waveAmplitude" type="range" min="0" max="100" step="1">
-
-        <label data-i18n="offset">Смещение</label>
-        <input id="waveOffset" type="range" min="0" max="1000" step="1">
-
-        <div class="group-divider"></div>
-
-        <!-- ==== Количество линий ==== -->
-        <div class="group-title" data-i18n="lineCount">Количество волн</div>
-
-        <label data-i18n="amount">Количество</label>
-        <input id="lineCopies" type="number" min="0" max="5" step="1">
-
-        <label data-i18n="lineSpacing">Интервал</label>
-        <input id="lineSpacing" type="range" min="160" max="700" step="1">
-
-        <div class="group-divider"></div>
-
-        <!-- ==== Повороты ==== -->
-        <div class="group-title" data-i18n="rotation">Вращение</div>
-
-        <label>X</label>
-        <input id="rotateXAngle" type="range" min="-1" max="1" step="0.01">
-
-        <label>Y</label>
-        <input id="rotateYAngle" type="range" min="-1" max="1" step="0.01">
-
-        <label>Z</label>
-        <input id="rotateZAngle" type="range" min="-1" max="1" step="0.01">
-
-        <div class="group-divider"></div>
-
-        <!-- ==== Позиция ==== -->
-        <div class="group-title" data-i18n="position">Позиция</div>
-
-        <label>X</label>
-        <input id="posX" type="range" min="-200" max="200" step="1">
-
-        <label>Y</label>
-        <input id="posY" type="range" min="-200" max="200" step="1">
-
-        <label>Z</label>
-        <input id="posZ" type="range" min="-500" max="500" step="1">
-
-        <div class="group-divider"></div>
-
-        <!-- ==== Цвета ==== -->
-        <div class="group-title" data-i18n="color">Цвета</div>
+        <div class="panel-card">
+<div class="group-title" data-i18n="color">Цвета</div>
 
         <div class="palette-row-compact">
           <div class="palette-block">
@@ -158,34 +151,18 @@
         </div>
 
         <div class="palette-actions-compact">
-          <button id="randomColorBothBtn" data-i18n="randomColors">Рандом цвета</button>
-          <button id="randomBgBtn" data-i18n="randomBg">Рандом фона</button>
-          <button id="randomEllipseBtn" data-i18n="randomWave">Рандом волны</button>
+          <button class="btn btn-mini" id="randomColorBothBtn" data-i18n="randomColors">Рандом цвета</button>
+          <button class="btn btn-mini" id="randomBgBtn" data-i18n="randomBg">Рандом фона</button>
+          <button class="btn btn-mini" id="randomEllipseBtn" data-i18n="randomWave">Рандом волны</button>
+        </div>
         </div>
 
-        <div class="group-divider"></div>
-
-        <!-- ==== Прочее ==== -->
-        <div class="group-title" data-i18n="other">Прочее</div>
-
-        <label data-i18n="skewX">Наклон X</label>
-        <input id="skewAngleX" type="range" min="-0.785" max="0.785" step="0.01">
-
-        <label data-i18n="skewY">Наклон Y</label>
-        <input id="skewAngleY" type="range" min="-0.785" max="0.785" step="0.01">
-
-        <label data-i18n="chaos">Хаотичность</label>
-        <input id="chaos" type="range" min="0" max="0.52" step="0.01">
-
+        <div class="lang-switch">
+          <button id="langRu" class="btn btn-mini">RU</button>
+          <button id="langEn" class="btn btn-mini">EN</button>
+        </div>
       </div>
-
-      <!-- ==== ЯЗЫК ==== -->
-      <div class="lang-switch">
-        <button id="langRu">RU</button>
-        <button id="langEn">EN</button>
-      </div>
-
-    </div>
+    </aside>
   </div>
 </body>
 </html>
